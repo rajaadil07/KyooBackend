@@ -1,13 +1,19 @@
 from .models import Song
 from .serializers import SongSerializer
 from .spotify import get_access_token
+from permissions import IsStaffPermission
 
-from rest_framework import views, status
+
+from rest_framework import generics, status
 from rest_framework.response import Response
 
 import requests
 
-class SongAPIView(views.APIView):
+class SongAPIView(generics.ListCreateAPIView):
+    serializer_class = SongSerializer
+    queryset = Song.objects.all()
+    permission_classes = [IsStaffPermission] # Only Staff will be able to view
+
     def get(self, request):
         query = request.GET.get('q')
         songs = Song.objects.all()
@@ -34,7 +40,7 @@ class SongAPIView(views.APIView):
                 release_year=song_data.get('album', {}).get('release_date', '')[:4],
                 album_art=song_data.get('album', {}).get('images', [{}])[0].get('url', '')
             )
-            serializer = SongSerializer(song)
+            serializer = self.get_serializer(song)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
         return Response({'error': 'Failed to retrieve results from the Spotify API'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
