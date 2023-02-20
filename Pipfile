@@ -9,6 +9,7 @@ djangorestframework = "*"
 python-dotenv = "*"
 requests = "*"
 psycopg2-binary = "*"
+qrcode = {extras = ["pil"], version = "*"}
 
 [dev-packages]
 
