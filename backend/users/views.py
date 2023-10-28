@@ -12,15 +12,15 @@ class UserCreate(generics.CreateAPIView):
         instance = serializer.save()
         instance.set_password(instance.password)
         instance.save()
+        instance.profile.is_host = True
+        instance.profile.save()
 
 class AttendeeCreate(generics.CreateAPIView):
-    queryset = Profile.objects.all()
-    serializer_class = ProfileSerializer
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
     permission_classes = [AllowAny]
 
     def perform_create(self, serializer):
         instance = serializer.save()
         instance.set_password(instance.password)
         instance.save()
-        instance.profile.is_host = True
-        instance.profile.save()
