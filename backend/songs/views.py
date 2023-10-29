@@ -1,8 +1,10 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework import generics
 from .spotify_helper import search_track
 from .serializers import SongSerializer
+from .models import Song
 
 class SongSearchView(APIView):
     def get(self, request):
@@ -17,3 +19,8 @@ class SongSearchView(APIView):
             return Response(serializer.data)
         else:
             return Response([])
+
+
+class SongListView(generics.ListCreateAPIView):
+    queryset = Song.objects.all()
+    serializer_class = SongSerializer
